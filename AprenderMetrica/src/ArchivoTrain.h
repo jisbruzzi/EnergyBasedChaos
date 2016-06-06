@@ -18,9 +18,10 @@ class ArchivoTrain{
 	ArchivoTrain();
 	int dimensiones;
 	double distancia(Entrada& e1, Entrada& e2);
+	void conectarTargetNeighbors(int k);
 	private:
 	void parsearFila(const string& fila,vector<float>& en);
 	int detectarDimensiones(const string& primera_linea);
-	void conectarTargetNeighbors(int k);
+	void conectarleTargetNeighbors(Entrada& a,int k);
 };
 #endif

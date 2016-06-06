@@ -64,15 +64,25 @@ double ArchivoTrain::distancia(Entrada& e1, Entrada& e2){
 
 void ArchivoTrain::conectarTargetNeighbors(int k){
 	vector<Entrada>::iterator it;
+	long int procesadas = 0;
+	long int total = entradas.size();
 	for(it = entradas.begin(); it!=entradas.end(); ++it){
 		conectarleTargetNeighbors(*it,k);
+		procesadas += 1;
+		cout<<"Procesadas: "<<(float)procesadas/(float)total*100<<"%"<<endl;
 	}
 }
 
-void conectarleTargetNeighbors(Entrada& a,int k){
+void ArchivoTrain::conectarleTargetNeighbors(Entrada& a,int k){
 	a.setCantidadTargetNeighbors(k);
 	vector<Entrada>::iterator it;
+	long int procesadas = 0;
+	long int total = entradas.size();
 	for(it = entradas.begin(); it!=entradas.end(); ++it){
+		procesadas += 1;
+		if( procesadas%((int)((float)total/10)) ==0){
+			cout<<"Subrocesadas: "<<(float)procesadas/(float)total*100<<"%"<<endl;
+		}
 		if(it->label==a.label){
 			double distancia_entre = distancia(*it,a);
 			a.posibleTargetNeighbor(*it,distancia_entre);

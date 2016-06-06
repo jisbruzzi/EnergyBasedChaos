@@ -5,6 +5,7 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include <map>
 using namespace std;
 class Entrada{
 	public:
@@ -12,12 +13,12 @@ class Entrada{
 	streampos posicion;
 	char label;
 	int cantidadTargetNeighbors;
-	long mayorDistancia;
+	map<Entrada*,double> targets;
+	Entrada* entradaMasLejana();
 	vector<Entrada*> targetNeighbors;
-	setCantidadTargetNeighbors(int k){
+	void setCantidadTargetNeighbors(int k){
 		cantidadTargetNeighbors = k;
-		mayorDistancia = -1;
 	}
-	void posibleTargetNeighbor(Entrada& otra,long distancia_entre);
+	void posibleTargetNeighbor(Entrada& otra,double distancia_entre);
 };
 #endif
