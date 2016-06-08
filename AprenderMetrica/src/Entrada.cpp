@@ -27,14 +27,23 @@ Entrada* Entrada::entradaMasLejana(){
 
 void Entrada::posibleTargetNeighbor(Entrada& otra,double distancia_entre){
 	Entrada* masLejana = entradaMasLejana();
-	if(targets.size() < cantidadTargetNeighbors){
-		targets[&otra]=distancia_entre;
-	}else{
-		double distancia_mas_lejana = targets[masLejana];
-		if(distancia_mas_lejana > distancia_entre){
-			targets.erase(masLejana);
+	if(distancia_entre>0){
+		if(targets.size() < cantidadTargetNeighbors){
 			targets[&otra]=distancia_entre;
+		}else{
+			double distancia_mas_lejana = targets[masLejana];
+			if(distancia_mas_lejana > distancia_entre){
+				targets.erase(masLejana);
+				targets[&otra]=distancia_entre;
+			}
 		}
 	}
-	
+}
+void Entrada::agregarEn(ofstream& en){
+	en<<posicion<<" ";
+	vector<Entrada*>::iterator it;
+	for(it = targetNeighbors.begin(); it != targetNeighbors.end(); ++it){
+		en<<(*it)->posicion<<" ";
+	}
+	en<<endl;
 }

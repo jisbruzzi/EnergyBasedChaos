@@ -20,5 +20,7 @@ class Entrada{
 		cantidadTargetNeighbors = k;
 	}
 	void posibleTargetNeighbor(Entrada& otra,double distancia_entre);
+	
+	void agregarEn(ofstream& en);
 };
 #endif

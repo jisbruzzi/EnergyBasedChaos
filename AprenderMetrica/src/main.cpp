@@ -20,5 +20,6 @@ int main(int argc, char* argv[]){
 	* */
 	ArchivoTrain archivo;
 	archivo.conectarTargetNeighbors(5);
+	archivo.guardarTargetNeighbours();
 }
 

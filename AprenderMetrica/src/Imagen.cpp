@@ -1,4 +1,8 @@
 #include "Imagen.h"
+
+Imagen::Imagen(ArchivoTrain& archivo, const string& linea, Entrada& en):entrada(en){
+	archivo.parsearFila(linea,pixeles);
+}
 Imagen::Imagen(ArchivoTrain& archivo, Entrada& en):entrada(en){
 	archivo.parsearPosicion(en.posicion,pixeles);
 	//cout<<"-----------"<<endl;

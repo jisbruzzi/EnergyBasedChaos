@@ -11,17 +11,21 @@ using namespace std;
 class ArchivoTrain{
 	private:
 	ifstream entrada;
+	streampos bytes_archivo;
 	
 	public:
+	long unsigned int neighborsEnBloque(Imagen& a, long unsigned int p_inicial, long unsigned int p_final);
 	vector<Entrada> entradas;
 	void parsearPosicion(streampos pos,vector<float>& en);
+	void parsearFila(const string& fila,vector<float>& en);
 	ArchivoTrain();
 	int dimensiones;
 	double distancia(Entrada& e1, Entrada& e2);
 	void conectarTargetNeighbors(int k);
+	void guardarTargetNeighbours();
 	private:
-	void parsearFila(const string& fila,vector<float>& en);
 	int detectarDimensiones(const string& primera_linea);
 	void conectarleTargetNeighbors(Entrada& a,int k);
+	
 };
 #endif
