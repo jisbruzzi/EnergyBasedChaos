@@ -15,7 +15,6 @@ class Entrada{
 	int cantidadTargetNeighbors;
 	map<Entrada*,double> targets;
 	Entrada* entradaMasLejana();
-	vector<Entrada*> targetNeighbors;
 	void setCantidadTargetNeighbors(int k){
 		cantidadTargetNeighbors = k;
 	}

@@ -26,24 +26,33 @@ Entrada* Entrada::entradaMasLejana(){
 }
 
 void Entrada::posibleTargetNeighbor(Entrada& otra,double distancia_entre){
+	
 	Entrada* masLejana = entradaMasLejana();
-	if(distancia_entre>0){
-		if(targets.size() < cantidadTargetNeighbors){
+	if(otra.posicion!=posicion){
+		if(targets.size() < 5){
 			targets[&otra]=distancia_entre;
+			//cout<<"Agrego a "<<posicion<<" el "<<otra.posicion<<endl;
 		}else{
 			double distancia_mas_lejana = targets[masLejana];
 			if(distancia_mas_lejana > distancia_entre){
 				targets.erase(masLejana);
 				targets[&otra]=distancia_entre;
+			//	cout<<"Agrego a "<<posicion<<" el "<<otra.posicion<<endl;
 			}
+			
 		}
 	}
+	
 }
 void Entrada::agregarEn(ofstream& en){
+	cout<<"----largo: "<<targets.size()<<"soy un "<<(int)label<<endl;
 	en<<posicion<<" ";
-	vector<Entrada*>::iterator it;
-	for(it = targetNeighbors.begin(); it != targetNeighbors.end(); ++it){
-		en<<(*it)->posicion<<" ";
+	cout<<posicion<<" ";
+	map<Entrada*,double>::iterator it;
+	for(it = targets.begin(); it != targets.end(); ++it){
+		en<<(it->first)->posicion<<" ";
+		cout<<(it->first)->posicion<<" ";
 	}
 	en<<endl;
+	cout<<endl;
 }

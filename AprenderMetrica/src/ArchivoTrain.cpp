@@ -1,6 +1,7 @@
 #include "ArchivoTrain.h"
 #include "Imagen.h"
 #include <cstdlib>
+#include <ctime>
 void ArchivoTrain::parsearFila(const string& fila,vector<float>& en){
 	istringstream stream(fila);
 	char numero[50];
@@ -68,7 +69,8 @@ void ArchivoTrain::conectarTargetNeighbors(int k){
 	vector<Entrada>::iterator it;
 	long int procesadas = 0;
 	long int total = entradas.size();
-	for(it = entradas.begin(); it!=entradas.end(); ++it){
+	//for(it = entradas.begin(); it!=entradas.end(); ++it){
+	for(it = entradas.begin(); (&(*it))!=&entradas[100]; ++it){
 		conectarleTargetNeighbors(*it,k);
 		procesadas += 1;
 		time_t tiempo_actual = clock();
@@ -97,43 +99,63 @@ void ArchivoTrain::conectarleTargetNeighbors(Entrada& a,int k){
 }
 */
 void ArchivoTrain::conectarleTargetNeighbors(Entrada& a,int k){
+	
 	a.setCantidadTargetNeighbors(k);
 	Imagen img_a(*this,a);
 	vector<Entrada>::iterator it;
 	entrada.open("entrada.csv");
 	long unsigned int pos_final = 0;
-	/*
+	entrada.seekg(entradas[0].posicion);
+	
 	while(pos_final<entradas.size()-1){
-		long unsigned int siguiente = pos_final +30;//constante mágica, 30...60 son óptimos
+		cout<<pos_final<<endl;
+		long unsigned int siguiente = pos_final +42000;//constante mágica, 30...60 son óptimos
 		if(siguiente>=entradas.size())siguiente=entradas.size()-1;
-		neighborsEnBloque(img_a,pos_final,siguiente);
-		pos_final = siguiente;
-		
+		//neighborsEnBloque(img_a,pos_final,siguiente);
+		//pos_final = siguiente;
+		pos_final = neighborsEnBloque(img_a,pos_final,siguiente);
 	}
-	* */
-	neighborsEnBloque(img_a,0,10);
+	//cout<<"LLegue hasta: "<<pos_final<<" No es menor que: "<<entradas.size()-1<<endl;
+	
+	//neighborsEnBloque(img_a,0,80);
 	//cout<<"Entradas sze: "<<entradas.size()<<" pos final: "<<pos_final<<endl;
 	entrada.close();
 }
-//chequear que tapoco haga vecinos a chavones con distancia 0!!
+
 long unsigned int ArchivoTrain::neighborsEnBloque(Imagen& a, long unsigned int p_inicial, long unsigned int p_final){
+	
+	//cout<<"Pos inicial: " <<entrada.tellg()<<endl;
+	//cargar el bloque en el char*
 	streampos tamanio_buffer =entradas[p_final].posicion - entradas[p_inicial].posicion;
-	char* buf = (char*) malloc(tamanio_buffer*sizeof(char));
-	entrada.getline(buf,tamanio_buffer,EOF);
+	char* buf = (char*) malloc((tamanio_buffer)*sizeof(char));
+	entrada.get(buf,tamanio_buffer,'j');//no hay jotas
+	//me desplazo un caracter más
+	char dummy;
+	entrada.get(dummy);
+	//estadísticas
+	/*
+	cout<<"Pos final: " <<entrada.tellg()<<endl;
+	string s(buf),h;
+	//cout<<buf<<s<<"  "<<tamanio_buffer<<"  "<<s.size()<<endl;
+	cout<<tamanio_buffer<<"  "<<s.size()<<endl;
+	cout<<"Arranqué en:" <<entradas[p_inicial].posicion<<" termino en: "<<entradas[p_final].posicion;
+	cin>>h;
+	*/
+	
 	istringstream oss(buf);
+	string fila;
 	for(long unsigned int i = p_inicial; i<p_final;++i){
-		string fila;
 		getline(oss,fila);
-		if(fila.size()==0){
-			//cout<<"corto en: "<<i<<endl;
-			free(buf);
-			return i;
-		}
-		if(entradas[i].label == a.entrada.label){
-			Imagen img_leida(*this,fila,entradas[i]);
-			double distancia_entre = a.euclideanaCuadrada(img_leida);
-			a.entrada.posibleTargetNeighbor(entradas[i],distancia_entre);
-			
+		
+		if(fila.size()!=0){
+			//cout<<(int)entradas[i].label<<" "<<(int)a.entrada.label<<endl;
+			if(entradas[i].label == a.entrada.label){
+				Imagen img_leida(*this,fila,entradas[i]);
+				double distancia_entre = a.euclideanaCuadrada(img_leida);
+				a.entrada.posibleTargetNeighbor(entradas[i],distancia_entre);
+			}
+		}else{
+			cout<<"Ignoro: "<<i<<fila<<endl;
 		}
 	}
 	free(buf);
@@ -221,7 +243,8 @@ void ArchivoTrain::guardarTargetNeighbours(){
 	ofstream salida;
 	salida.open("TargetNeighbours.dat");
 	vector<Entrada>::iterator it;
-	for(it=entradas.begin(); it!=entradas.end(); ++it){
+	//for(it=entradas.begin(); it!=entradas.end(); ++it){
+	for(it = entradas.begin(); (&(*it))!=&entradas[100]; ++it){
 		it->agregarEn(salida);
 	}
 }

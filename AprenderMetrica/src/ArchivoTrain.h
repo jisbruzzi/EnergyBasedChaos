@@ -5,7 +5,9 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include <Eigen/Geometry>
 #include "Entrada.h"
+typedef Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> Matriz;
 class Imagen;
 using namespace std;
 class ArchivoTrain{

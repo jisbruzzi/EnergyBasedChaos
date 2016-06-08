@@ -1,6 +1,8 @@
 #include <iostream>
 #include "ArchivoTrain.h"
 #include "Imagen.h"
+#define MAX_DIMENSIONES 784
+
 /**
  * Necesito que el archivo venga en 
  * "exactamente" el mismo formato que 
