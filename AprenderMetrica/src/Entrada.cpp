@@ -1,5 +1,5 @@
 #include "Entrada.h"
-
+#include "config.h"
 Entrada::Entrada(streampos posicion, string desde){
 	this->posicion = posicion;
 	
@@ -26,10 +26,9 @@ Entrada* Entrada::entradaMasLejana(){
 }
 
 void Entrada::posibleTargetNeighbor(Entrada& otra,double distancia_entre){
-	
 	Entrada* masLejana = entradaMasLejana();
 	if(otra.posicion!=posicion){
-		if(targets.size() < 5){
+		if(targets.size() < TARGET_NEIGHBORS){
 			targets[&otra]=distancia_entre;
 			//cout<<"Agrego a "<<posicion<<" el "<<otra.posicion<<endl;
 		}else{

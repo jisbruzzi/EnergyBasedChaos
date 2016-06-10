@@ -3,6 +3,7 @@
 #include <iostream>
 #include "ArchivoTrain.h"
 #include "Entrada.h"
+class ArchivoNeighbors;
 using namespace std;
 class Imagen{
 	public:
@@ -11,5 +12,7 @@ class Imagen{
 	vector<float> pixeles;
 	Entrada& entrada;
 	double euclideanaCuadrada(Imagen& otra);
+	//bool esIntruso(Imagen& posible, ArchivoNeighbors& neighbors);
+	double dTargetMasDistante(ArchivoNeighbors& neighbors);
 };
 #endif

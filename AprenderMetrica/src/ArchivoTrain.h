@@ -7,6 +7,7 @@
 #include <vector>
 #include <Eigen/Geometry>
 #include "Entrada.h"
+typedef unsigned long int ulint;
 typedef Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> Matriz;
 class Imagen;
 using namespace std;
@@ -16,18 +17,19 @@ class ArchivoTrain{
 	streampos bytes_archivo;
 	
 	public:
-	long unsigned int neighborsEnBloque(Imagen& a, long unsigned int p_inicial, long unsigned int p_final);
+	long unsigned int neighborsEnBloque(Imagen& a, ulint p_inicial, ulint p_final, ifstream& entrada);
 	vector<Entrada> entradas;
 	void parsearPosicion(streampos pos,vector<float>& en);
 	void parsearFila(const string& fila,vector<float>& en);
 	ArchivoTrain();
 	int dimensiones;
 	double distancia(Entrada& e1, Entrada& e2);
-	void conectarTargetNeighbors(int k);
+	void conectarTargetNeighbors(int k,ulint desde, ulint hasta);
 	void guardarTargetNeighbours();
+	void guardarTargetNeighbours(ulint desde, ulint hasta);
+	void cargarImagenes(map<ulint,Imagen*>& cargadas);
 	private:
 	int detectarDimensiones(const string& primera_linea);
 	void conectarleTargetNeighbors(Entrada& a,int k);
-	
 };
 #endif

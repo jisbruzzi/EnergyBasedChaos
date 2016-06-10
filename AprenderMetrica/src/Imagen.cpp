@@ -1,7 +1,10 @@
 #include "Imagen.h"
-
+#include "ArchivoNeighbors.h"
 Imagen::Imagen(ArchivoTrain& archivo, const string& linea, Entrada& en):entrada(en){
 	archivo.parsearFila(linea,pixeles);
+	if(pixeles.size()==0){
+		throw "hay 0 pixeles, imagen ivalida";
+	}
 }
 Imagen::Imagen(ArchivoTrain& archivo, Entrada& en):entrada(en){
 	archivo.parsearPosicion(en.posicion,pixeles);
@@ -18,9 +21,30 @@ Imagen::Imagen(ArchivoTrain& archivo, Entrada& en):entrada(en){
 
 double Imagen::euclideanaCuadrada(Imagen& otra){
 	double suma = 0;
-	for(int i = 0; i<pixeles.size(); ++i){
+	for(unsigned int i = 0; i<pixeles.size(); ++i){
 		float dif = pixeles[i]-otra.pixeles[i];
 		suma += dif*dif;
 	}
 	return suma;
+}
+/*
+bool Imagen::esIntruso(Imagen& posible, ArchivoNeighbors& neighbors){
+	double mayor_distancia = dTargetMasDistante(neighbors);
+	double distancia_otro = euclideanaCuadrada(posible);
+	return (distancia_otro<=mayor_distancia+1);//ojo con las raíces cuadradaas!!!!
+}
+*/
+double Imagen::dTargetMasDistante(ArchivoNeighbors& neighbors){
+	map<Entrada*,double>::iterator it;
+	map<Entrada*,double>& targets = entrada.targets;
+	double mayor = 0;
+	for(it = targets.begin(); it!=targets.end(); ++it){
+		Entrada* entrada = it->first;
+		Imagen& img = *neighbors.imagenes[entrada->posicion];
+		double calculada = euclideanaCuadrada(img);
+		if(mayor<calculada){
+			mayor = calculada;
+		}
+	}
+	return mayor;
 }
