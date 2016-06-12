@@ -29,7 +29,7 @@ void ArchivoNeighbors::cargarImagenes(){
 	train.cargarImagenes(imagenes);
 }
 
-void ArchivoNeighbors::agregarActiveSets(set<ActiveSet*>& sets){
+void ArchivoNeighbors::agregarActiveSets(ConjuntoActiveSets& sets){
 	map<ulint,Imagen*>::iterator it_dato;
 	map<ulint,Imagen*>::iterator it_vecino;
 	cout<<"Iniciando búsqueda de active sets:"<<endl;
@@ -60,10 +60,10 @@ void ArchivoNeighbors::agregarActiveSets(set<ActiveSet*>& sets){
 				bool cumplen_distancias = distancia_otro<=distancia_target+1;
 				bool labels_distintos = (dato->entrada.label != vecino->entrada.label);
 				if(labels_distintos && cumplen_distancias){//definición de intruso del papaer!!!
-					ActiveSet* nuevo=new ActiveSet;
-					nuevo->dato = dato;
-					nuevo->targetNeighbor = target;
-					nuevo->impostor = vecino;
+					ActiveSet nuevo;//=new ActiveSet;
+					nuevo.dato = dato;
+					nuevo.targetNeighbor = target;
+					nuevo.impostor = vecino;
 					sets.insert(nuevo);
 					//cout<<"Encontré un intruso!"<<vecino->entrada.posicion<<endl;
 				}
@@ -74,7 +74,7 @@ void ArchivoNeighbors::agregarActiveSets(set<ActiveSet*>& sets){
 }
 
 
-
+// 1-mu por sumatoria de (Cij)
 void ArchivoNeighbors::calcularG0(Matriz& g0){
 	cout<<"Iniciando búsqueda de G0:"<<endl;
 	ulint iteracion = 0;
@@ -107,4 +107,50 @@ void ArchivoNeighbors::calcularG0(Matriz& g0){
 	g0*=0.5;//porque mu=0.5 y entonces 1 - mu = 0.5
 	
 	cout<<"Terminó el cálculo de G0"<<endl;
+}
+
+// mu por sumatoria de (Cij-Cil)
+void ArchivoNeighbors::calcularSegundoTerminoGradiente(Matriz& g,ConjuntoActiveSets& activos){
+	cout<<"Iniciando búsqueda de SegundoTerminoGradiente:"<<endl;
+	ulint iteracion = 0;
+	ulint largo = activos.size();
+	time_t inicial = clock();
+	time_t actual;
+	
+	ConjuntoActiveSets::iterator it;
+	for(it=activos.begin(); it!=activos.end(); ++it){
+		
+		actual = clock();
+		iteracion += 1;
+		float proporcion = (float)iteracion/(float)largo;
+		float tiempo_paso = (float)(actual-inicial)/CLOCKS_PER_SEC;
+		float s_totales = tiempo_paso/proporcion;
+		if(iteracion%50==1){
+			cout<<"Voy :"<<proporcion*100<<"%, son en total: "<<s_totales<<"segundos, o "<<s_totales/3600<<" horas"<<endl;
+		}
+		
+		
+		it->dato->sumar_productoT(*(it->targetNeighbor),g);
+		it->dato->sumar_productoT(*(it->impostor),g);
+	}
+	g*=0.5;//porque mu=0.5
+	
+	cout<<"Terminó el cálculo de SegundoTerminoGradiente"<<endl;
+}
+
+void ArchivoNeighbors::filtrarActivos(ConjuntoActiveSets& sets, ConjuntoActiveSets& filtrados){
+	ConjuntoActiveSets::iterator it;
+	for(it = sets.begin(); it != sets.end(); ++it){
+		Imagen* dato = it->dato;
+		Imagen* targetNeighbor = it->targetNeighbor;
+		Imagen* impostor = it->impostor;
+		
+		double distancia_target = dato->euclideanaCuadrada(*target);
+		double distancia_otro = dato->euclideanaCuadrada(*impostor);
+		bool cumplen_distancias = distancia_otro<=distancia_target+1;
+		
+		if(cumplen_distancias){
+			filtrados.insert(*it);
+		}
+	}
 }
