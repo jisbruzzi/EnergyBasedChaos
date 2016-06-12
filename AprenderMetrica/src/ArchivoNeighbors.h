@@ -3,6 +3,7 @@
 #include "ArchivoTrain.h"
 #include <set>
 #include "ActiveSet.h"
+#include "config.h"
 class ArchivoNeighbors{
 	private:
 	ArchivoTrain& train;
@@ -13,6 +14,8 @@ class ArchivoNeighbors{
 	ArchivoNeighbors(ArchivoTrain& train);
 	void conectarImagenes();
 	void cargarImagenes();
+	
+	void calcularG0(Matriz& g0);
 	
 };
 #endif

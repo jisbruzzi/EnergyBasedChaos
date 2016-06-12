@@ -2,6 +2,7 @@
 #include "config.h"
 #include "Imagen.h"
 #include <ctime>
+
 ArchivoNeighbors::ArchivoNeighbors(ArchivoTrain& t):train(t){	
 	cargarImagenes();
 	cout<<"Termine de cargar las imagenes"<<endl;
@@ -31,6 +32,7 @@ void ArchivoNeighbors::cargarImagenes(){
 void ArchivoNeighbors::agregarActiveSets(set<ActiveSet*>& sets){
 	map<ulint,Imagen*>::iterator it_dato;
 	map<ulint,Imagen*>::iterator it_vecino;
+	cout<<"Iniciando búsqueda de active sets:"<<endl;
 	ulint iteracion = 0;
 	ulint largo = imagenes.size();
 	time_t inicial = clock();
@@ -68,4 +70,41 @@ void ArchivoNeighbors::agregarActiveSets(set<ActiveSet*>& sets){
 			}
 		}
 	}
+	cout<<"Terminó el cálculo de active sets"<<endl;
+}
+
+
+
+void ArchivoNeighbors::calcularG0(Matriz& g0){
+	cout<<"Iniciando búsqueda de G0:"<<endl;
+	ulint iteracion = 0;
+	ulint largo = imagenes.size();
+	time_t inicial = clock();
+	time_t actual;
+	
+	map<ulint,Imagen*>::iterator it;
+	for(it = imagenes.begin(); it!=imagenes.end(); ++it){
+		actual = clock();
+		iteracion += 1;
+		float proporcion = (float)iteracion/(float)largo;
+		float tiempo_paso = (float)(actual-inicial)/CLOCKS_PER_SEC;
+		float s_totales = tiempo_paso/proporcion;
+		if(iteracion%50==1){
+			cout<<"Voy :"<<proporcion*100<<"%, son en total: "<<s_totales<<"segundos, o "<<s_totales/3600<<" horas"<<endl;
+		}
+		
+		Imagen& img = *(it->second);
+		
+		map<Entrada*,double>& targets = img.entrada.targets;
+		map<Entrada*,double>::iterator it;
+		for(it = targets.begin(); it!= targets.end(); ++it){
+			Entrada& correspondiente = *(it->first);
+			Imagen& img_t = *imagenes[correspondiente.posicion];
+			img.sumar_productoT(img_t,g0);
+		}
+	}
+	
+	g0*=0.5;//porque mu=0.5 y entonces 1 - mu = 0.5
+	
+	cout<<"Terminó el cálculo de G0"<<endl;
 }

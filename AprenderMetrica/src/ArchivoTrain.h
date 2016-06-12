@@ -7,8 +7,7 @@
 #include <vector>
 #include <Eigen/Geometry>
 #include "Entrada.h"
-typedef unsigned long int ulint;
-typedef Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> Matriz;
+#include "config.h"
 class Imagen;
 using namespace std;
 class ArchivoTrain{

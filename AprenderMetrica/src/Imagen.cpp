@@ -48,3 +48,11 @@ double Imagen::dTargetMasDistante(ArchivoNeighbors& neighbors){
 	}
 	return mayor;
 }
+
+void Imagen::sumar_productoT(Imagen& img ,Matriz& en){
+	Eigen::Map<Vector> vec(pixeles.data());
+	Eigen::Map<Vector> vec2(img.pixeles.data());
+	Vector  resta  = vec2-vec;
+	Vectort restat = resta.transpose();
+	en += resta * restat;
+}

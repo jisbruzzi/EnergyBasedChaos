@@ -3,6 +3,7 @@
 #include <iostream>
 #include "ArchivoTrain.h"
 #include "Entrada.h"
+#include "config.h"
 class ArchivoNeighbors;
 using namespace std;
 class Imagen{
@@ -14,5 +15,7 @@ class Imagen{
 	double euclideanaCuadrada(Imagen& otra);
 	//bool esIntruso(Imagen& posible, ArchivoNeighbors& neighbors);
 	double dTargetMasDistante(ArchivoNeighbors& neighbors);
+	
+	void sumar_productoT(Imagen& img ,Matriz& en);
 };
 #endif

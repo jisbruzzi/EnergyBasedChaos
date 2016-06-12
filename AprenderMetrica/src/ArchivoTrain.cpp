@@ -10,7 +10,7 @@ void ArchivoTrain::parsearFila(const string& fila,vector<float>& en){
 	char numero[50];
 	stream.getline(numero,50,',');//el primer número es el label
 	
-	while(!stream.eof()){
+	while(!stream.eof() && en.size()<DIMENSIONES){//esto corta la cola
 		stream.getline(numero,50,',');
 		istringstream stream_numero(numero);
 		float obtenido;

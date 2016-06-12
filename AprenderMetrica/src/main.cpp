@@ -2,10 +2,11 @@
 #include "ArchivoTrain.h"
 #include "Imagen.h"
 #include "Trabajador.h"
-#define MAX_DIMENSIONES 784
+#include "config.h"
 #include "ArchivoNeighbors.h"
 #include <set>
 #include "ActiveSet.h"
+#include <fstream>
 /**
  * Necesito que el archivo venga en 
  * "exactamente" el mismo formato que 
@@ -31,6 +32,15 @@ int main(int argc, char* argv[]){
 			set<ActiveSet*> caca;
 			neighbors.agregarActiveSets(caca);
 			cout<<"Los impostores que encontré son "<<caca.size()<<endl;
+		}else if(argv[1][0]=='g'){
+			ofstream off("G0.dat");
+			cout<<"Voy a calcular la matriz G0"<<endl;
+			ArchivoTrain archivo;
+			ArchivoNeighbors neighbors(archivo);
+			Matriz g0;
+			neighbors.calcularG0(g0);
+			cout<<"G0 es "<<g0<<endl;
+			off<<g0;
 		}
 	}
 	return 0;
