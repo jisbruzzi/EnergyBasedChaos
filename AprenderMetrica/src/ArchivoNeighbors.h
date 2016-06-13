@@ -5,6 +5,7 @@
 #include "ActiveSet.h"
 #include "config.h"
 typedef set<ActiveSet,CompararActiveSet> ConjuntoActiveSets;
+//typedef set<ActiveSet*> ConjuntoActiveSets;
 class ArchivoNeighbors{
 	private:
 	ArchivoTrain& train;
@@ -15,11 +16,12 @@ class ArchivoNeighbors{
 	 * "Compute Nt+1 exactly"
 	 * */
 	void agregarActiveSets(ConjuntoActiveSets& sets);
+	void agregarActiveSets(ConjuntoActiveSets& sets,Matriz& m);
 	
 	/**
 	 * "Nt+1 ~ Nt+1 interseccion N(t)" (only search active set)
 	 * */
-	void filtrarActivos(ConjuntoActiveSets& sets, ConjuntoActiveSets& filtrados);
+	void filtrarActivos(ConjuntoActiveSets& sets, ConjuntoActiveSets& filtrados, Matriz& m);
 	
 	ArchivoNeighbors(ArchivoTrain& train);
 	void conectarImagenes();

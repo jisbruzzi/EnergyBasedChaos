@@ -8,6 +8,8 @@
 #include "ActiveSet.h"
 #include <fstream>
 #include <Eigen/Eigenvalues>
+#include <algorithm>
+#include <iterator>
 /**
  * Necesito que el archivo venga en 
  * "exactamente" el mismo formato que 
@@ -23,6 +25,28 @@ void filtrarNegativos(Matriz& m){
 			m(i,i)=0;
 		}
 	}
+}
+
+void obtenerSalieron(	ConjuntoActiveSets& salieron,
+						ConjuntoActiveSets& activos, 
+						ConjuntoActiveSets& anterior){
+	//salieron = anterior - activos
+	set_difference(	anterior.begin(),anterior.end(),
+					activos.begin(),activos.end(), 
+					inserter(salieron,salieron.end()),
+					CompararActiveSet()
+	);
+}
+void obtenerEntraron(	ConjuntoActiveSets& entraron,
+						ConjuntoActiveSets& activos, 
+						ConjuntoActiveSets& anterior){
+	//entraron = activos - anterior
+	set_difference(	activos.begin(),activos.end(),
+					anterior.begin(),anterior.end(), 
+					inserter(entraron,entraron.end()),
+					CompararActiveSet()
+	);
+	//notese que los argumentos están invertidos
 }
 
 int main(int argc, char* argv[]){
@@ -42,36 +66,46 @@ int main(int argc, char* argv[]){
 			
 			Matriz m,g;
 			m.setIdentity();//initialize with the identity matrix
-			ConjuntoActiveSets posibles_activos, activos, anterior;//initialize active sets
-			neighbors.calcularG0(g);//initialize gradient
+			ConjuntoActiveSets posibles_activos, activos, anteriores;//initialize active sets
+			//neighbors.calcularG0(g);//initialize gradient
 			
 			
 			
-			for(int i = 0; i<10; i++){//while not converged do
+			for(int i = 0; i<2; i++){//while not converged do
+				cout<<"Iniciando nueva iteracion:"<<i<<endl;
 				if(i==0){//if mod(i,10)==0 || casi convergencia then
+					posibles_activos.clear();
 					neighbors.agregarActiveSets(posibles_activos);//compute Nt+1 exactly
-					activos = posibles_activos//update active set
+					//(es inviable hacer la búsqueda de active sets con la distancia Mahalanobis)
+					activos = posibles_activos;//update active set
 				}else{
 					anteriores = activos;
-					neighbors.filtrarActivos(posibles_activos, activos);//compute Nt+1 only search active set
+					neighbors.filtrarActivos(posibles_activos, activos,m);
+					//compute Nt+1 only search active set
 				}
+				cout<<"Posibles activos:"<<activos.size()<<endl;
+				
+				cout<<"Voy a calcular la G nueva"<<endl;
 				
 				ConjuntoActiveSets salieron, entraron;
-				obtenerSalieron(salieron,activos,anterior);
-				obtenerEntraron(entraron,activos,anterior);
+				obtenerSalieron(salieron,activos,anteriores);
+				obtenerEntraron(entraron,activos,anteriores);
+				cout<<"Ya tengo los que salientraron"<<endl;
+				
 				Matriz gResta,gSuma;
 				neighbors.calcularSegundoTerminoGradiente(gResta,salieron);
 				neighbors.calcularSegundoTerminoGradiente(gSuma,entraron);
 				g+=g-gResta+gSuma;//sumaresta de gradientes
 				
+				cout<<"Descmponiendo las matrices"<<endl;
 				
-				Matriz m_def = m-0.1*g0;//Mt-alfa*Gt+1
+				Matriz m_def = m-0.1*g;//Mt-alfa*Gt+1
 				Eigen::EigenSolver<Matriz> solver(m_def);
 				Matriz delta = solver.pseudoEigenvalueMatrix();
 				Matriz v = solver.pseudoEigenvectors();
 				filtrarNegativos(delta);//proyección sobre semidefinidas positivas
 				m=v*delta*v.transpose();//take gradient step
-			
+				
 			}
 			
 			off<<m;//output Mt
@@ -93,7 +127,7 @@ int main(int argc, char* argv[]){
 			ArchivoTrain archivo;
 			ArchivoNeighbors neighbors(archivo);
 			
-			set<ActiveSet,CompararActiveSet> caca;
+			ConjuntoActiveSets caca;
 			neighbors.agregarActiveSets(caca);
 			cout<<"Activesets: "<<caca.size()<<endl;
 		}

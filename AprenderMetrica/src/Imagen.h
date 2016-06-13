@@ -13,9 +13,11 @@ class Imagen{
 	vector<float> pixeles;
 	Entrada& entrada;
 	double euclideanaCuadrada(Imagen& otra);
+	double distanciaMahalanobis(Imagen& otra,Matriz& m);
 	//bool esIntruso(Imagen& posible, ArchivoNeighbors& neighbors);
 	double dTargetMasDistante(ArchivoNeighbors& neighbors);
 	
 	void sumar_productoT(Imagen& img ,Matriz& en);
+	
 };
 #endif

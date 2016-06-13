@@ -1,5 +1,6 @@
 #include "Imagen.h"
 #include "ArchivoNeighbors.h"
+#include <cmath>
 Imagen::Imagen(ArchivoTrain& archivo, const string& linea, Entrada& en):entrada(en){
 	archivo.parsearFila(linea,pixeles);
 	if(pixeles.size()==0){
@@ -55,4 +56,19 @@ void Imagen::sumar_productoT(Imagen& img ,Matriz& en){
 	Vector  resta  = vec2-vec;
 	Vectort restat = resta.transpose();
 	en += resta * restat;
+}
+
+double Imagen::distanciaMahalanobis(Imagen& otra,Matriz& m){
+	//return sqrt(euclideanaCuadrada(otra));
+
+	Eigen::Map<Vector> vec(pixeles.data());
+	Eigen::Map<Vector> vec2(otra.pixeles.data());
+	Vector  resta  = vec2-vec;
+	Vectort restat = resta.transpose();
+	double distancia_cuadrada = resta.transpose() * m * resta;
+	return sqrt(distancia_cuadrada);
+	
+	//return sqrt(euclideanaCuadrada(otra));
+	
+	
 }
