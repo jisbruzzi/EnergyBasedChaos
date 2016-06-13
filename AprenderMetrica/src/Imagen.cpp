@@ -26,7 +26,7 @@ double Imagen::euclideanaCuadrada(Imagen& otra){
 		float dif = pixeles[i]-otra.pixeles[i];
 		suma += dif*dif;
 	}
-	return suma;
+	return sqrt(suma);
 }
 /*
 bool Imagen::esIntruso(Imagen& posible, ArchivoNeighbors& neighbors){
@@ -66,7 +66,7 @@ double Imagen::distanciaMahalanobis(Imagen& otra,Matriz& m){
 	Vector  resta  = vec2-vec;
 	Vectort restat = resta.transpose();
 	double distancia_cuadrada = resta.transpose() * m * resta;
-	return sqrt(distancia_cuadrada);
+	return distancia_cuadrada;
 	
 	//return sqrt(euclideanaCuadrada(otra));
 	
